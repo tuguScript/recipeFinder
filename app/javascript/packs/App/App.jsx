@@ -20,12 +20,8 @@ export default class App extends Component {
       recipes: [],
       tags: []
     };
-    // this.getSearchResults = this.getSearchResults.bind(this);
   }
   componentDidMount() {
-    const config = {
-      headers: { "Access-Control-Allow-Origin": "*" }
-    };
     axios
       .get(apiUrl)
       .then(response => {
@@ -37,7 +33,6 @@ export default class App extends Component {
       });
   }
   getSearchResults = e => {
-    // let { value } = e.target;
     if (value.length < 3) return;
     this.fetchSearchTerm(value);
   };
@@ -45,9 +40,6 @@ export default class App extends Component {
   // debouncedSearch = debounce(this.fetchSearchTerm, 700);
   fetchSearchTerm = searchTerm => {
     let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
-    // %2Csugar
-    // let searchparams = `?fillIngredients=false&ingredients=apple%2Csugar&limitLicense=false&number=5&ranking=1`;
-    // let api = apiUrl + searchparams;
     axios
       .get(api)
       .then(response => {
@@ -59,11 +51,6 @@ export default class App extends Component {
       });
   };
   handleChange(tags) {
-    console.log(
-      this.state.tags.map(tag => {
-        return tag;
-      })
-    );
     this.setState({ tags }, () => {
       this.fetchSearchTerm(
         this.state.tags.map(tag => {
