@@ -1,11 +1,12 @@
 class AccessController < ApplicationController
+  before_action :confirm_logged_in, :except => [:login, :attempt_login, :log_out ]
   def menu
     # display admin index
   end
 
   def login
     # display login form
-    puts 'show you r logged in'
+    puts 'login form'
   end
 
   def attempt_login
@@ -28,5 +29,9 @@ class AccessController < ApplicationController
   end
 
   def log_out
+    session[:user_id] = nil
+    redirect_to('/')
   end
+
+
 end

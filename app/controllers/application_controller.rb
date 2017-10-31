@@ -4,4 +4,12 @@ class ApplicationController < ActionController::Base
   # def set_access_control_headers
   #   headers['Access-Control-Allow-Origin'] = '*'
   # end  
+
+  private 
+  
+    def confirm_logged_in
+      unless session[:user_id]
+        redirect_to('/')
+      end
+    end
 end
