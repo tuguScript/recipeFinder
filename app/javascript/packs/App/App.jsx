@@ -1,36 +1,14 @@
 import React, { Component } from "react";
 import "./App.scss.css";
-import axios from "axios";
 import TagsInput from "react-tagsinput";
-
-const params =
-  "?mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW&limitLicense=true&number=10";
-const apiUrl =
-  "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random" +
-  params;
 
 const Card = props => {
   return <div>{props.data.title}</div>;
 };
 
 export default class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      recipes: [],
-      tags: []
-    };
-  }
   componentDidMount() {
-    axios
-      .get(apiUrl)
-      .then(response => {
-        console.log(response);
-        this.setState({ recipes: response.data.recipes });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    console.log(this.props);
   }
   getSearchResults = e => {
     if (value.length < 3) return;
@@ -60,16 +38,22 @@ export default class App extends Component {
     });
   }
   render() {
+    let recipes =
+      this.props.recipes.length > 1 ? (
+        this.props.recipes.map((recipe, i) => {
+          return <Card data={recipe} key={i} />;
+        })
+      ) : (
+        <h1> Loading </h1>
+      );
     return (
       <div className="app">
-        <TagsInput
+        {/* <TagsInput
           value={this.state.tags}
           onChange={this.handleChange.bind(this)}
-        />
+        />*/}
         Random recipe
-        {this.state.recipes.map((recipe, i) => {
-          return <Card data={recipe} key={i} />;
-        })}
+        {recipes}
       </div>
     );
   }
