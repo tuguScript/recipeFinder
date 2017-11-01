@@ -7,6 +7,12 @@ const Card = props => {
 };
 
 export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      tags: []
+    };
+  }
   componentDidMount() {
     console.log(this.props);
   }
@@ -16,21 +22,10 @@ export default class App extends Component {
   };
   // Get a new function that is debounced when called
   // debouncedSearch = debounce(this.fetchSearchTerm, 700);
-  fetchSearchTerm = searchTerm => {
-    let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
-    axios
-      .get(api)
-      .then(response => {
-        console.log(response);
-        this.setState({ recipes: response.data });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  };
+  
   handleChange(tags) {
     this.setState({ tags }, () => {
-      this.fetchSearchTerm(
+      this.props.fetchSearchTerm(
         this.state.tags.map(tag => {
           return tag.split(" ").join(",");
         })
@@ -48,10 +43,10 @@ export default class App extends Component {
       );
     return (
       <div className="app">
-        {/* <TagsInput
+        <TagsInput
           value={this.state.tags}
           onChange={this.handleChange.bind(this)}
-        />*/}
+        />
         Random recipe
         {recipes}
       </div>
