@@ -32,6 +32,15 @@ class AccessController < ApplicationController
     session[:user_id] = nil
     redirect_to('/')
   end
+  
+  private
 
+  def authentication_payload(user)
+    return nil unless user && user.id
+    {
+      auth_token: AuthToken.encode({ user_id: id }),
+      user: { id: user.id, username: user.username } # return whatever user info you need
+    }
+  end
 
 end

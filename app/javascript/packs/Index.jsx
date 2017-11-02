@@ -13,7 +13,10 @@ import "./index.scss.css";
 import NavigationDrawer from "react-md/lib/NavigationDrawers";
 import { Link as RouterLink } from "react-router-dom";
 import { FontIcon, ListItem } from "react-md";
+import { DropdownMenu, TextField } from "react-md";
 import WebFontLoader from "webfontloader";
+import { Avatar, AccessibleFakeButton, IconSeparator } from "react-md";
+import { DialogContainer } from "react-md";
 
 WebFontLoader.load({
   google: {
@@ -64,6 +67,34 @@ const About = () => (
   </div>
 );
 
+const Dialog = () => (
+  <div>
+    <DialogContainer
+      id="simple-list-dialog"
+      visible={true}
+      title="Simple List Dialog"
+      onHide={() => console.log("qwe")}
+      focusOnMount={true}
+    >
+      <div
+        id="field-1"
+        label="Field 1"
+        placeholder="Lorem ipsum"
+        className="md-cell md-cell--12"
+      >
+        qwe
+      </div>
+      <TextField
+        id="field-2"
+        label="Field 2"
+        placeholder="Multiline text here"
+        rows={2}
+        className="md-cell md-cell--12"
+      />
+    </DialogContainer>
+  </div>
+);
+
 class Index extends React.Component {
   constructor() {
     super();
@@ -82,6 +113,7 @@ class Index extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
+    console.log("sessionStorage: ", sessionStorage.getItem("user_id"));
   }
   fetchSearchTerm = searchTerm => {
     let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
@@ -102,6 +134,10 @@ class Index extends React.Component {
           render={({ location }) => (
             <NavigationDrawer
               drawerTitle="Me Chef"
+              desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
+              mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY_MINI}
+              tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
+              toolbarActions={<AccountMenu />}
               toolbarTitle={
                 this.state.session ? "Possible Recipes" : "Random recipes"
               }
@@ -128,7 +164,7 @@ class Index extends React.Component {
                   location={location}
                   component={Account}
                 />
-                <Route path="/about" location={location} component={About} />
+                <Route path="/about" location={location} component={Dialog} />
               </Switch>
             </NavigationDrawer>
           )}
@@ -164,4 +200,32 @@ const NavLink = ({ label, to, exact, icon }) => (
       );
     }}
   </Route>
+);
+
+const AccountMenu = ({ simplifiedMenu }) => (
+  <DropdownMenu
+    style={{ marginTop: "5%" }}
+    id={`${!simplifiedMenu ? "smart-" : ""}avatar-dropdown-menu`}
+    menuItems={["Saved", { divider: true }, "Log out"]}
+    anchor={{
+      x: DropdownMenu.HorizontalAnchors.CENTER,
+      y: DropdownMenu.VerticalAnchors.OVERLAP
+    }}
+    position={DropdownMenu.Positions.TOP_LEFT}
+    animationPosition="below"
+    sameWidth
+    simplifiedMenu={simplifiedMenu}
+  >
+    <AccessibleFakeButton
+      component={IconSeparator}
+      iconBefore
+      label={
+        <IconSeparator label="some.email@example.com">
+          <FontIcon>arrow_drop_down</FontIcon>
+        </IconSeparator>
+      }
+    >
+      <Avatar suffix="pink">S</Avatar>
+    </AccessibleFakeButton>
+  </DropdownMenu>
 );
