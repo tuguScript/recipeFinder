@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'access/menu'
   get 'access/login'
   post 'access/attempt_login'
+  post 'access/attempt_signup'
   get 'access/log_out'
 
   root 'pages#index'

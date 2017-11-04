@@ -1,5 +1,5 @@
 class AccessController < ApplicationController
-  before_action :confirm_logged_in, :except => [:login, :attempt_login, :log_out ]
+  # before_action :confirm_logged_in, :except => [:login, :attempt_login, :log_out ]
   def menu
     # display admin index
   end
@@ -7,6 +7,16 @@ class AccessController < ApplicationController
   def login
     # display login form
     puts 'login form'
+  end
+
+  def attempt_signup
+    if params[:email].present? && params[:password].present?
+      user = User.new(:email => params[:email])
+      user.email = params[:email]
+      user.password = params[:password]
+      user.save
+      render json: {status: 'success'}
+    end
   end
 
   def attempt_login
@@ -18,13 +28,11 @@ class AccessController < ApplicationController
     end
 
     if authorized_user
-      session[:user_id] = authorized_user.id
-      puts 'show you r logged in'
-      redirect_to(user_path)
+      payload = {id: authorized_user.id, email: authorized_user.email}
+      token = JWT.encode payload, nil, 'none'
+      render json: {token: token, user: {id: authorized_user.id, email: authorized_user.email}}
     else
-      puts 'show you r not logged in '
-      # show 'you r not logged in' 
-      render('login')
+      render json: {errors: ['Invalid Username/Password']}, status: :unauthorized
     end
   end
 
@@ -41,6 +49,10 @@ class AccessController < ApplicationController
       auth_token: AuthToken.encode({ user_id: id }),
       user: { id: user.id, username: user.username } # return whatever user info you need
     }
+  end
+
+  def user_params
+    params.require(:email, :password).permit(:email, :password)
   end
 
 end

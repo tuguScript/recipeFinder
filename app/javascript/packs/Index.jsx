@@ -15,7 +15,12 @@ import { Link as RouterLink } from "react-router-dom";
 import { FontIcon, ListItem } from "react-md";
 import { DropdownMenu, TextField } from "react-md";
 import WebFontLoader from "webfontloader";
-import { Avatar, AccessibleFakeButton, IconSeparator } from "react-md";
+import {
+  Avatar,
+  AccessibleFakeButton,
+  IconSeparator,
+  MenuButton
+} from "react-md";
 import { DialogContainer } from "react-md";
 
 WebFontLoader.load({
@@ -100,34 +105,93 @@ class Index extends React.Component {
     super();
     this.state = {
       recipes: [],
-      tags: []
+      tags: [],
+      showLoginForm: false,
+      showSignupForm: false,
+      loginEmail: "",
+      loginPassword: ""
     };
   }
   componentDidMount() {
-    axios
-      .get(apiUrl)
-      .then(response => {
-        console.log(response);
-        this.setState({ recipes: response.data.recipes });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-    console.log("sessionStorage: ", sessionStorage.getItem("user_id"));
+    // axios
+    //   .get(apiUrl)
+    //   .then(response => {
+    //     console.log(response);
+    //     this.setState({ recipes: response.data.recipes });
+    //   })
+    //   .catch(function(error) {
+    //     console.log(error);
+    //   });
   }
   fetchSearchTerm = searchTerm => {
     let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
     axios
       .get(api)
       .then(response => {
-        console.log(response);
         this.setState({ recipes: response.data, session: "searchedRecipe" });
       })
       .catch(function(error) {
         console.log(error);
       });
   };
+  openLoginForm() {
+    this.setState({ showLoginForm: true });
+  }
+  loginPostRequest() {
+    let loginForm = {
+      email: this.state.loginEmail,
+      password: this.state.loginPassword
+    };
+    axios
+      .post("/access/attempt_login", loginForm)
+      .then(res => {
+        sessionStorage.setItem("user", JSON.stringify(res.data));
+        this.setState({ showLoginForm: false });
+      })
+      .catch(e => {
+        console.log("error", e);
+      });
+  }
+  signupPostRequest() {
+    let signupForm = {
+      email: this.state.loginEmail,
+      password: this.state.loginPassword
+    };
+    axios
+      .post("/access/attempt_signup", signupForm)
+      .then(res => {
+        // sessionStorage.setItem("user", JSON.stringify(res.data));
+        this.setState({ showLoginForm: false });
+      })
+      .catch(e => {
+        console.log("error", e);
+      });
+  }
+  logOutUser() {
+    sessionStorage.removeItem("user");
+    this.forceUpdate();
+  }
+  showSignupForm() {
+    this.setState({ showLoginForm: false, showSignupForm: true });
+  }
+
   render() {
+    // login form iin 2 button
+    const actions = [
+      <Button flat primary onClick={() => this.showSignupForm()}>
+        Sign Up
+      </Button>,
+      {
+        secondary: true,
+        children: "Cancel",
+        onClick: () => {
+          this.setState({ showLoginForm: false });
+        }
+      },
+      <Button flat primary onClick={() => this.loginPostRequest()}>
+        Login
+      </Button>
+    ];
     return (
       <Router>
         <Route
@@ -137,7 +201,13 @@ class Index extends React.Component {
               desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
               mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY_MINI}
               tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
-              toolbarActions={<AccountMenu />}
+              toolbarActions={
+                <AccountMenu
+                  openLoginForm={() => this.openLoginForm()}
+                  logOutUser={() => this.logOutUser()}
+                  showSignupForm={() => this.showSignupForm()}
+                />
+              }
               toolbarTitle={
                 this.state.session ? "Possible Recipes" : "Random recipes"
               }
@@ -145,6 +215,95 @@ class Index extends React.Component {
                 <NavLink {...props} key={props.to} />
               ))}
             >
+              {/* signupForm */}
+              <DialogContainer
+                id="simple-list-dialog"
+                visible={this.state.showSignupForm}
+                title="Sign up"
+                onHide={() => this.setState({ showLoginForm: false })}
+                focusOnMount={true}
+                actions={[
+                  {
+                    secondary: true,
+                    children: "Cancel",
+                    onClick: () => {
+                      this.setState({ showSignupForm: false });
+                    }
+                  },
+                  <Button flat primary onClick={() => this.signupPostRequest()}>
+                    Sign Up
+                  </Button>
+                ]}
+              >
+                <TextField
+                  name="email"
+                  id="field-1"
+                  label="E-mail"
+                  // placeholder="E-mail"
+                  className="md-cell md-cell--12"
+                  onChange={e => {
+                    this.setState(prevState => {
+                      return {
+                        loginEmail: e
+                      };
+                    });
+                  }}
+                />
+                <TextField
+                  type="password"
+                  name="password"
+                  id="field-2"
+                  // label="Password"
+                  placeholder="Password"
+                  className="md-cell md-cell--12"
+                  onChange={e => {
+                    this.setState(prevState => {
+                      return {
+                        loginPassword: e
+                      };
+                    });
+                  }}
+                />
+              </DialogContainer>
+              {/* loginForm dialog */}
+              <DialogContainer
+                id="simple-list-dialog"
+                visible={this.state.showLoginForm}
+                title="Login"
+                onHide={() => this.setState({ showLoginForm: false })}
+                focusOnMount={true}
+                actions={actions}
+              >
+                <TextField
+                  name="email"
+                  id="field-1"
+                  label="E-mail"
+                  // placeholder="E-mail"
+                  className="md-cell md-cell--12"
+                  onChange={e => {
+                    this.setState(prevState => {
+                      return {
+                        loginEmail: e
+                      };
+                    });
+                  }}
+                />
+                <TextField
+                  type="password"
+                  name="password"
+                  id="field-2"
+                  // label="Password"
+                  placeholder="Password"
+                  className="md-cell md-cell--12"
+                  onChange={e => {
+                    this.setState(prevState => {
+                      return {
+                        loginPassword: e
+                      };
+                    });
+                  }}
+                />
+              </DialogContainer>
               <Switch key={location.key}>
                 <Route
                   exact
@@ -202,30 +361,49 @@ const NavLink = ({ label, to, exact, icon }) => (
   </Route>
 );
 
-const AccountMenu = ({ simplifiedMenu }) => (
-  <DropdownMenu
-    style={{ marginTop: "5%" }}
-    id={`${!simplifiedMenu ? "smart-" : ""}avatar-dropdown-menu`}
-    menuItems={["Saved", { divider: true }, "Log out"]}
-    anchor={{
-      x: DropdownMenu.HorizontalAnchors.CENTER,
-      y: DropdownMenu.VerticalAnchors.OVERLAP
-    }}
-    position={DropdownMenu.Positions.TOP_LEFT}
-    animationPosition="below"
-    sameWidth
-    simplifiedMenu={simplifiedMenu}
-  >
-    <AccessibleFakeButton
-      component={IconSeparator}
-      iconBefore
-      label={
-        <IconSeparator label="some.email@example.com">
-          <FontIcon>arrow_drop_down</FontIcon>
-        </IconSeparator>
-      }
+const AccountMenu = ({ simplifiedMenu, openLoginForm, logOutUser }) =>
+  sessionStorage.getItem("user") ? (
+    <DropdownMenu
+      style={{ marginTop: "5%" }}
+      id={`${!simplifiedMenu ? "smart-" : ""}avatar-dropdown-menu`}
+      menuItems={[
+        "Saved",
+        { divider: true },
+        <ListItem key={"qwe"} primaryText="Log out" onClick={logOutUser} />
+      ]}
+      anchor={{
+        x: DropdownMenu.HorizontalAnchors.CENTER,
+        y: DropdownMenu.VerticalAnchors.OVERLAP
+      }}
+      position={DropdownMenu.Positions.TOP_LEFT}
+      animationPosition="below"
+      sameWidth
+      simplifiedMenu={simplifiedMenu}
     >
-      <Avatar suffix="pink">S</Avatar>
-    </AccessibleFakeButton>
-  </DropdownMenu>
-);
+      <AccessibleFakeButton
+        component={IconSeparator}
+        iconBefore
+        label={
+          <IconSeparator label={JSON.parse(sessionStorage.user).user.email}>
+            <FontIcon>arrow_drop_down</FontIcon>
+          </IconSeparator>
+        }
+      >
+        <Avatar suffix="pink">
+          {JSON.parse(sessionStorage.user)
+            .user.email.charAt(0)
+            .toUpperCase()}
+        </Avatar>
+      </AccessibleFakeButton>
+    </DropdownMenu>
+  ) : (
+    <Button
+      id="menu-button-1"
+      raised
+      primary
+      iconChildren="chat"
+      onClick={() => openLoginForm()}
+    >
+      Login
+    </Button>
+  );
