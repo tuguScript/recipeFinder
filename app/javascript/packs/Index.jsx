@@ -175,15 +175,15 @@ class Index extends React.Component {
     };
   }
   componentDidMount() {
-    // axios
-    //   .get(apiUrl)
-    //   .then(response => {
-    //     console.log(response);
-    //     this.setState({ recipes: response.data.recipes });
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
+    axios
+      .get(apiUrl)
+      .then(response => {
+        console.log(response);
+        this.setState({ recipes: response.data.recipes });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
   fetchSearchTerm = searchTerm => {
     let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
