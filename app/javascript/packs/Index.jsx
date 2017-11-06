@@ -21,7 +21,69 @@ import {
   IconSeparator,
   MenuButton
 } from "react-md";
+import TagsInput from "react-tagsinput";
 import { DialogContainer } from "react-md";
+
+const recipes = [
+  {
+    glutenFree: true,
+    healthScore: 2,
+    id: 0,
+    image: "https://spoonacular.com/recipeImages/715700-556x370.jpg",
+    imageType: "jpg",
+    instructions:
+      "In a medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
+    ketogenic: false,
+    license: "CC BY 3.0",
+    lowFodmap: false,
+    occasions: [],
+    pricePerServing: 17.08,
+    readyInMinutes: 45,
+    servings: 24,
+    sourceName: "Pick Fresh Foods",
+    sourceUrl: "http://pickfreshfoods.com/2014/08/28/homemade-taco-seasoning/",
+    spoonacularScore: 35,
+    spoonacularSourceUrl:
+      "https://spoonacular.com/homemade-taco-seasoning-715700",
+    sustainable: false,
+    title: "Homemade Taco Seasoning",
+    vegan: true,
+    vegetarian: true,
+    veryHealthy: false,
+    veryPopular: false,
+    weightWatcherSmartPoints: 0,
+    whole30: true
+  },
+  {
+    glutenFree: true,
+    healthScore: 2,
+    id: 1,
+    image: "https://spoonacular.com/recipeImages/715700-556x370.jpg",
+    imageType: "jpg",
+    instructions:
+      "In a medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
+    ketogenic: false,
+    license: "CC BY 3.0",
+    lowFodmap: false,
+    occasions: [],
+    pricePerServing: 17.08,
+    readyInMinutes: 45,
+    servings: 24,
+    sourceName: "Pick Fresh Foods",
+    sourceUrl: "http://pickfreshfoods.com/2014/08/28/homemade-taco-seasoning/",
+    spoonacularScore: 35,
+    spoonacularSourceUrl:
+      "https://spoonacular.com/homemade-taco-seasoning-715700",
+    sustainable: false,
+    title: "zuursan guril",
+    vegan: true,
+    vegetarian: true,
+    veryHealthy: false,
+    veryPopular: false,
+    weightWatcherSmartPoints: 0,
+    whole30: true
+  }
+];
 
 WebFontLoader.load({
   google: {
@@ -104,7 +166,7 @@ class Index extends React.Component {
   constructor() {
     super();
     this.state = {
-      recipes: [],
+      recipes: recipes,
       tags: [],
       showLoginForm: false,
       showSignupForm: false,
@@ -174,6 +236,20 @@ class Index extends React.Component {
   showSignupForm() {
     this.setState({ showLoginForm: false, showSignupForm: true });
   }
+  handleChange(tags) {
+    this.setState({ tags }, () => {
+      this.fetchSearchTerm(
+        this.state.tags.map(tag => {
+          return tag.split(" ").join(",");
+        })
+      );
+    });
+  }
+
+  getSearchResults = e => {
+    if (value.length < 3) return;
+    this.fetchSearchTerm(value);
+  };
 
   render() {
     // login form iin 2 button
@@ -206,6 +282,13 @@ class Index extends React.Component {
                   openLoginForm={() => this.openLoginForm()}
                   logOutUser={() => this.logOutUser()}
                   showSignupForm={() => this.showSignupForm()}
+                />
+              }
+              toolbarChildren={
+                <TagsInput
+                  className="tags-input"
+                  value={this.state.tags}
+                  onChange={this.handleChange.bind(this)}
                 />
               }
               toolbarTitle={
