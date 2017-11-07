@@ -16,7 +16,6 @@ export default class App extends Component {
   // Get a new function that is debounced when called
   // debouncedSearch = debounce(this.fetchSearchTerm, 700);
 
-
   render() {
     let recipes =
       this.props.recipes.length > 1 ? (
@@ -24,13 +23,8 @@ export default class App extends Component {
           return <Card1 data={recipe} key={i} />;
         })
       ) : (
-        <h1> Loading </h1>
+        <h1> Enter what you have. </h1>
       );
-    return (
-      <div className="app">
-        
-        {recipes}
-      </div>
-    );
+    return <div className="app">{recipes}</div>;
   }
 }

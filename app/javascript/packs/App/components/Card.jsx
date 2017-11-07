@@ -48,6 +48,7 @@ export default class Card1 extends Component {
   }
   render() {
     let recipe = this.props.data;
+    let info = this.state.informationBulk;
     return (
       <div>
         <DialogContainer
@@ -63,40 +64,71 @@ export default class Card1 extends Component {
           width={900}
         >
           <TextField id="none" style={{ display: "none" }} />
-          <div className="wrapper" style={{textAlign: 'center'}}>
-          <img src={recipe.image} alt=""/>
-          <div className="extendedIngredients">
-            <DataTable plain>
-              <TableHeader>
-                <TableRow>
-                  <TableColumn>name</TableColumn>
-                  <TableColumn>Image</TableColumn>
-                  <TableColumn>Description</TableColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {this.state.informationBulk.length >= 1 ? (
-                  this.state.informationBulk[0].extendedIngredients.map(
-                    (data, i) => (
-                      <TableRow key={i}>
-                        <TableColumn>{data.name}</TableColumn>
-                        <TableColumn>
-                          <img src={data.image} alt="" />
-                        </TableColumn>
-                        <TableColumn>{data.originalString}</TableColumn>
-                      </TableRow>
-                    )
-                  )
-                ) : (
-                  <TableRow key={1}>
-                    <TableColumn>loading</TableColumn>
-                    <TableColumn>loading</TableColumn>
-                    <TableColumn>loading</TableColumn>
+          <div className="wrapper" style={{ textAlign: "center" }}>
+            <img src={recipe.image} alt="" />
+            <div className="extendedIngredients">
+              <DataTable plain>
+                <TableHeader>
+                  <TableRow>
+                    <TableColumn>Image</TableColumn>
+                    <TableColumn>name</TableColumn>
+                    <TableColumn>Description</TableColumn>
                   </TableRow>
-                )}
-              </TableBody>
-            </DataTable>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {this.state.informationBulk.length >= 1 ? (
+                    this.state.informationBulk[0].extendedIngredients.map(
+                      (data, i) => (
+                        <TableRow key={i}>
+                          <TableColumn>
+                            <img src={data.image} alt="" />
+                          </TableColumn>
+                          <TableColumn className="md-text-capitalize">
+                            {data.name}
+                          </TableColumn>
+                          <TableColumn>{data.originalString}</TableColumn>
+                        </TableRow>
+                      )
+                    )
+                  ) : (
+                    <TableRow key={1}>
+                      <TableColumn>loading</TableColumn>
+                      <TableColumn>loading</TableColumn>
+                      <TableColumn>loading</TableColumn>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </DataTable>
+              <hr />
+              <div className="section-preperation">
+                <h1>Preperation</h1>
+                <div
+                  className="md-body-1 md-text-left"
+                  dangerouslySetInnerHTML={{ __html: recipe.instructions }}
+                />
+                <div
+                  className="md-body-1 md-text-left"
+                  dangerouslySetInnerHTML={{ __html: this.state.informationBulk.length >= 1
+                      ? this.state.informationBulk[0].instructions
+                      : "null" }}
+                />
+              </div>
+              <div>
+                <a
+                  target="_blank"
+                  href={
+                    this.state.informationBulk.length >= 1
+                      ? this.state.informationBulk[0].sourceUrl
+                      : "null"
+                  }
+                >
+                  Source:{" "}
+                  {this.state.informationBulk.length >= 1
+                    ? this.state.informationBulk[0].sourceName
+                    : "null"}
+                </a>
+              </div>
+            </div>
           </div>
         </DialogContainer>
 
@@ -124,15 +156,3 @@ export default class Card1 extends Component {
     );
   }
 }
-
-// {this.state.informationBulk.length >= 1
-//   ? this.state.informationBulk[0].extendedIngredients.map(
-//       (data, i) => {
-//         <TableRow key={i}>
-//           <TableColumn>data.name</TableColumn>
-//           <TableColumn>i</TableColumn>
-//           <TableColumn>d</TableColumn>
-//         </TableRow>;
-//       }
-//     )
-//   : null}
