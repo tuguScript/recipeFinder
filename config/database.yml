@@ -25,6 +25,7 @@ test:
 
 production:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
   database: tugurails_production
   username: tugurails
   password: <%= ENV['TUGURAILS_DATABASE_PASSWORD'] %>
