@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import "./App.scss.css";
 import Card1 from "./components/Card";
+import Masonry from "react-masonry-component";
+
+const masonryOptions = {
+  transitionDuration: 0
+};
 
 export default class App extends Component {
   constructor() {
@@ -10,12 +15,13 @@ export default class App extends Component {
     };
   }
   componentDidMount() {
-    console.log(this.props);
+    window.onscroll = function(ev) {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        console.log("bottom");
+        this.props.loadMore();
+      }
+    }.bind(this);
   }
-
-  // Get a new function that is debounced when called
-  // debouncedSearch = debounce(this.fetchSearchTerm, 700);
-
   render() {
     let recipes =
       this.props.recipes.length > 1 ? (
@@ -25,6 +31,13 @@ export default class App extends Component {
       ) : (
         <h1> Enter what you have. </h1>
       );
-    return <div className="app">{recipes}</div>;
+    return (
+      <div id="app">
+        <Masonry className="app" options={masonryOptions}>
+          {recipes}
+        </Masonry>
+        {this.props.requestSent ? <div>Loading</div> : <div>Load More</div>}
+      </div>
+    );
   }
 }

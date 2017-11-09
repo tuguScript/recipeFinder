@@ -111,7 +111,7 @@ const navItems = [
 ];
 
 const params =
-  "?mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW&limitLicense=true&number=10";
+  "?mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW&limitLicense=true&number=15";
 const apiUrl =
   "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random" +
   params;
@@ -171,7 +171,8 @@ class Index extends React.Component {
       showLoginForm: false,
       showSignupForm: false,
       loginEmail: "",
-      loginPassword: ""
+      loginPassword: "",
+      requestSent: false
     };
   }
   componentDidMount() {
@@ -245,11 +246,46 @@ class Index extends React.Component {
       );
     });
   }
-
   getSearchResults = e => {
     if (value.length < 3) return;
     this.fetchSearchTerm(value);
   };
+  loadMore() {
+    if (!this.state.requestSent) {
+      this.setState({ requestSent: true }, () => {
+        if (this.state.tags.length > 0) {
+          let searchTerm = this.state.tags;
+          let api = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=${searchTerm}&limitLicense=false&number=10&ranking=1&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW`;
+          axios
+            .get(api)
+            .then(response => {
+              let loadedMore = response.data.recipes;
+              this.setState({
+                recipes: [...this.state.recipes, ...loadedMore]
+              });
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        } else {
+          axios
+            .get(apiUrl)
+            .then(response => {
+              console.log(response);
+              let loadedMore = response.data.recipes;
+              this.setState({
+                recipes: [...this.state.recipes, ...loadedMore],
+                requestSent: false
+              });
+              // this.setState({ requestSent: false });
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
+      });
+    }
+  }
 
   render() {
     // login form iin 2 button
@@ -395,6 +431,10 @@ class Index extends React.Component {
                   render={() => {
                     return (
                       <App
+                        loadMore={() => {
+                          this.loadMore();
+                        }}
+                        requestSent={this.state.requestSent}
                         recipes={this.state.recipes}
                         fetchSearchTerm={tags => this.fetchSearchTerm(tags)}
                       />

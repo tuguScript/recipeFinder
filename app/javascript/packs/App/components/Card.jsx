@@ -4,6 +4,7 @@ import {
   Card,
   CardTitle,
   CardText,
+  CardActions,
   Media,
   MediaOverlay,
   DialogContainer,
@@ -108,9 +109,12 @@ export default class Card1 extends Component {
                 />
                 <div
                   className="md-body-1 md-text-left"
-                  dangerouslySetInnerHTML={{ __html: this.state.informationBulk.length >= 1
-                      ? this.state.informationBulk[0].instructions
-                      : "null" }}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      this.state.informationBulk.length >= 1
+                        ? this.state.informationBulk[0].instructions
+                        : "null"
+                  }}
                 />
               </div>
               <div>
@@ -133,24 +137,27 @@ export default class Card1 extends Component {
         </DialogContainer>
 
         <Card
-          onClick={id => {
-            this.openCardDialog(recipe.id);
-          }}
+          className="card"
         >
-          <Media>
+          <Media
+            onClick={id => {
+              this.openCardDialog(recipe.id);
+            }}
+          >
             <img src={recipe.image} alt="Nature from lorempixel" />
-            <MediaOverlay>
-              <CardTitle title={recipe.title} subtitle="">
-                <Button
-                  className="md-cell--right"
-                  icon
-                  onClick={() => alert("hi")}
-                >
-                  {false ? "bookmark" : "bookmark_border"}
-                </Button>
-              </CardTitle>
-            </MediaOverlay>
           </Media>
+          <CardTitle title={recipe.title} />
+          <CardActions>
+            <Button
+              flat
+              onClick={id => {
+                this.openCardDialog(recipe.id);
+              }}
+            >
+              Show more
+            </Button>
+            <Button icon>{false ? "bookmark" : "bookmark_border"}</Button>
+          </CardActions>
         </Card>
       </div>
     );
