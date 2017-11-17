@@ -61,7 +61,7 @@ const recipes = [
     image: "https://spoonacular.com/recipeImages/715700-556x370.jpg",
     imageType: "jpg",
     instructions:
-      "In a medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
+      "In aa medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
     ketogenic: false,
     license: "CC BY 3.0",
     lowFodmap: false,
