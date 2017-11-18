@@ -18,7 +18,7 @@ import {
 } from "react-md";
 import axios from "axios";
 
-export default class Card1 extends Component {
+export default class Item extends Component {
   constructor() {
     super();
     this.state = {

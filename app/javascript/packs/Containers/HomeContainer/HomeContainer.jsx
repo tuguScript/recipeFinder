@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import "./App.scss.css";
-import Card1 from "./components/Card";
+import "./HomeContainer.scss.css";
+import Item from "../../Components/Item";
 import Masonry from "react-masonry-component";
 
 const masonryOptions = {
   transitionDuration: 0
 };
 
-export default class App extends Component {
+export default class HomeContainer extends Component {
   constructor() {
     super();
     this.state = {
@@ -26,7 +26,7 @@ export default class App extends Component {
     let recipes =
       this.props.recipes.length > 1 ? (
         this.props.recipes.map((recipe, i) => {
-          return <Card1 data={recipe} key={i} />;
+          return <Item data={recipe} key={i} />;
         })
       ) : (
         <h1> Enter what you have. </h1>
