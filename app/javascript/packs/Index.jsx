@@ -6,7 +6,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import App from "./App/App.jsx";
+import HomeContainer from "./Containers/HomeContainer";
+import SavedContainer from './Containers/SavedContainer'
 import axios from "axios";
 import { Button, SVGIcon } from "react-md";
 import "./index.scss.css";
@@ -15,6 +16,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { FontIcon, ListItem } from "react-md";
 import { DropdownMenu, TextField } from "react-md";
 import WebFontLoader from "webfontloader";
+import Post from './Components/Post'
 import {
   Avatar,
   AccessibleFakeButton,
@@ -24,66 +26,8 @@ import {
 import TagsInput from "react-tagsinput";
 import { DialogContainer } from "react-md";
 
-const recipes = [
-  {
-    glutenFree: true,
-    healthScore: 2,
-    id: 0,
-    image: "https://spoonacular.com/recipeImages/715700-556x370.jpg",
-    imageType: "jpg",
-    instructions:
-      "In a medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
-    ketogenic: false,
-    license: "CC BY 3.0",
-    lowFodmap: false,
-    occasions: [],
-    pricePerServing: 17.08,
-    readyInMinutes: 45,
-    servings: 24,
-    sourceName: "Pick Fresh Foods",
-    sourceUrl: "http://pickfreshfoods.com/2014/08/28/homemade-taco-seasoning/",
-    spoonacularScore: 35,
-    spoonacularSourceUrl:
-      "https://spoonacular.com/homemade-taco-seasoning-715700",
-    sustainable: false,
-    title: "Homemade Taco Seasoning",
-    vegan: true,
-    vegetarian: true,
-    veryHealthy: false,
-    veryPopular: false,
-    weightWatcherSmartPoints: 0,
-    whole30: true
-  },
-  {
-    glutenFree: true,
-    healthScore: 2,
-    id: 1,
-    image: "https://spoonacular.com/recipeImages/715700-556x370.jpg",
-    imageType: "jpg",
-    instructions:
-      "In aa medium mixing bowl combine all the ingredients together with a whisk.Store in an air-tight container.",
-    ketogenic: false,
-    license: "CC BY 3.0",
-    lowFodmap: false,
-    occasions: [],
-    pricePerServing: 17.08,
-    readyInMinutes: 45,
-    servings: 24,
-    sourceName: "Pick Fresh Foods",
-    sourceUrl: "http://pickfreshfoods.com/2014/08/28/homemade-taco-seasoning/",
-    spoonacularScore: 35,
-    spoonacularSourceUrl:
-      "https://spoonacular.com/homemade-taco-seasoning-715700",
-    sustainable: false,
-    title: "zuursan guril",
-    vegan: true,
-    vegetarian: true,
-    veryHealthy: false,
-    veryPopular: false,
-    weightWatcherSmartPoints: 0,
-    whole30: true
-  }
-];
+
+const recipes = []
 
 WebFontLoader.load({
   google: {
@@ -116,52 +60,6 @@ const apiUrl =
   "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/random" +
   params;
 
-const Account = () => (
-  <div>
-    <h2>Account</h2>
-  </div>
-);
-
-const Home = () => (
-  <div>
-    <h2>Home</h2>
-  </div>
-);
-
-const About = () => (
-  <div>
-    <h2>About</h2>
-  </div>
-);
-
-const Dialog = () => (
-  <div>
-    <DialogContainer
-      id="simple-list-dialog"
-      visible={true}
-      title="Simple List Dialog"
-      onHide={() => console.log("qwe")}
-      focusOnMount={true}
-    >
-      <div
-        id="field-1"
-        label="Field 1"
-        placeholder="Lorem ipsum"
-        className="md-cell md-cell--12"
-      >
-        qwe
-      </div>
-      <TextField
-        id="field-2"
-        label="Field 2"
-        placeholder="Multiline text here"
-        rows={2}
-        className="md-cell md-cell--12"
-      />
-    </DialogContainer>
-  </div>
-);
-
 class Index extends React.Component {
   constructor() {
     super();
@@ -182,7 +80,7 @@ class Index extends React.Component {
         console.log(response);
         this.setState({ recipes: response.data.recipes });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -193,12 +91,15 @@ class Index extends React.Component {
       .then(response => {
         this.setState({ recipes: response.data, session: "searchedRecipe" });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
   openLoginForm() {
     this.setState({ showLoginForm: true });
+  }
+  showSignupForm() {
+    this.setState({ showLoginForm: false, showSignupForm: true });
   }
   loginPostRequest() {
     let loginForm = {
@@ -234,9 +135,6 @@ class Index extends React.Component {
     sessionStorage.removeItem("user");
     this.forceUpdate();
   }
-  showSignupForm() {
-    this.setState({ showLoginForm: false, showSignupForm: true });
-  }
   handleChange(tags) {
     this.setState({ tags }, () => {
       this.fetchSearchTerm(
@@ -264,7 +162,7 @@ class Index extends React.Component {
                 recipes: [...this.state.recipes, ...loadedMore]
               });
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.log(error);
             });
         } else {
@@ -279,7 +177,7 @@ class Index extends React.Component {
               });
               // this.setState({ requestSent: false });
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.log(error);
             });
         }
@@ -430,7 +328,7 @@ class Index extends React.Component {
                   location={location}
                   render={() => {
                     return (
-                      <App
+                      <HomeContainer
                         loadMore={() => {
                           this.loadMore();
                         }}
@@ -442,11 +340,15 @@ class Index extends React.Component {
                   }}
                 />
                 <Route
-                  path="/account"
+                  path="/saved"
                   location={location}
-                  component={Account}
+                  component={SavedContainer}
                 />
-                <Route path="/about" location={location} component={Dialog} />
+                <Route path="/about" location={location} render={() => {
+                  return (
+                    <Post />
+                  )
+                }} />
               </Switch>
             </NavigationDrawer>
           )}
@@ -455,13 +357,6 @@ class Index extends React.Component {
     );
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(
-    <Index />,
-    document.body.appendChild(document.createElement("div"))
-  );
-});
 
 const NavLink = ({ label, to, exact, icon }) => (
   <Route path={to} exact={exact}>
@@ -520,13 +415,24 @@ const AccountMenu = ({ simplifiedMenu, openLoginForm, logOutUser }) =>
       </AccessibleFakeButton>
     </DropdownMenu>
   ) : (
-    <Button
-      id="menu-button-1"
-      raised
-      primary
-      iconChildren="chat"
-      onClick={() => openLoginForm()}
-    >
-      Login
+      <Button
+        id="menu-button-1"
+        raised
+        primary
+        iconChildren="chat"
+        onClick={() => openLoginForm()}
+      >
+        Login
     </Button>
+    );
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  ReactDOM.render(
+    <Index />,
+    document.body.appendChild(document.createElement("div"))
   );
+});

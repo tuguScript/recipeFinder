@@ -18,7 +18,7 @@ import {
 } from "react-md";
 import axios from "axios";
 
-export default class Card1 extends Component {
+export default class Item extends Component {
   constructor() {
     super();
     this.state = {
@@ -34,11 +34,11 @@ export default class Card1 extends Component {
   openCardDialog(id) {
     axios
       .get(
-        "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/informationBulk" +
-          "?ids=" +
-          id +
-          "&includeNutrition=true" +
-          "&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW"
+      "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/informationBulk" +
+      "?ids=" +
+      id +
+      "&includeNutrition=true" +
+      "&mashape-key=3a6VknyIDEmshjDcEAPkhNr8FHxXp19URzajsnlWwvn2WYHTaW"
       )
       .then(res => {
         this.setState({ informationBulk: res.data });
@@ -92,12 +92,12 @@ export default class Card1 extends Component {
                       )
                     )
                   ) : (
-                    <TableRow key={1}>
-                      <TableColumn>loading</TableColumn>
-                      <TableColumn>loading</TableColumn>
-                      <TableColumn>loading</TableColumn>
-                    </TableRow>
-                  )}
+                      <TableRow key={1}>
+                        <TableColumn>loading</TableColumn>
+                        <TableColumn>loading</TableColumn>
+                        <TableColumn>loading</TableColumn>
+                      </TableRow>
+                    )}
                 </TableBody>
               </DataTable>
               <hr />
@@ -156,7 +156,8 @@ export default class Card1 extends Component {
             >
               Show more
             </Button>
-            <Button icon>{false ? "bookmark" : "bookmark_border"}</Button>
+            {false ? <Button icon onClick={() => this.props.unBookMark()}>{"bookmark"}</Button> :
+              <Button icon onClick={(obj) => this.props.bookMark({ title: recipe.title, recipe_id: recipe.id, image: recipe.image })}>{"bookmark_border"}</Button>}
           </CardActions>
         </Card>
       </div>

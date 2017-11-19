@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   post 'access/attempt_login'
   post 'access/attempt_signup'
   get 'access/log_out'
+  # save recipes
+  post 'saved_recipes', :to => 'save_recipe#return_saved_recipes'
+  post 'save_recipe', :to => 'save_recipe#save_recipe'
+  # delete 'save', :to => 'save_recipe#return_saved_recipes'
 
   root 'pages#index'
   get '*path', to: 'pages#index'
